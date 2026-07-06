@@ -1,0 +1,3 @@
+nome	categoria	valor 	Razão social
+--------------------------------------------
+Comida
