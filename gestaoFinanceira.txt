@@ -1,7 +1,12 @@
 nome		produto			categoria	valor	quantidade	
-------------------------------------------------------------------
-Bernardo	Carne			alimentação	40.00	1
-Bernardo	Água mineral		alimentação	5.00	5
-Bernardo	Carregador de cel.	eletrônicos	20.00	1
-Bernardo	Cabo de cel.		eletrônicos	5.00	1
-Bernardo	Caderno			estudos		8.00	3
+-----------------------------------------------------------------------------
+Bernardo	Carne			alimentação	40.00		1
+Bernardo	Água mineral		alimentação	5.00		5
+Bernardo	Carregador de cel.	eletrônicos	20.00		1
+Bernardo	Cabo de cel.		eletrônicos	5.00		1
+Bernardo	Caderno			estudos		8.00		3
+Gustavo		Computador		eletrônicos	3500.00 	1
+Gustavo		Televisão		eletrônicos	1450.00		2
+Gustavo		GTA 6			eletrônicos	550.00		1
+Gustavo		Rodízio Pizzaria	alimentação	80.50		1
+Gustavo		Uber Sexta		transporte	27.42		1
