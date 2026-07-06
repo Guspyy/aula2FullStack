@@ -1,0 +1,102 @@
+
+99-078205+SQC1@99-078205 MINGW64 ~/Desktop/Local_Lista/aula2FullStack (main)
+$ git fetch --all
+
+99-078205+SQC1@99-078205 MINGW64 ~/Desktop/Local_Lista/aula2FullStack (main)
+$ git branch
+* main
+
+99-078205+SQC1@99-078205 MINGW64 ~/Desktop/Local_Lista/aula2FullStack (main)
+$ git branch -a
+* main
+  remotes/origin/HEAD -> origin/main
+  remotes/origin/Versão-Bernardo
+  remotes/origin/main
+
+99-078205+SQC1@99-078205 MINGW64 ~/Desktop/Local_Lista/aula2FullStack (main)
+$ git update
+Warning! `git update` has been deprecated;
+Please use `git update-git-for-windows` instead.
+Git for Windows 2.54.0.windows.1 (64-bit)
+Update 2.55.0.windows.2 is available
+Download and install Git for Windows v2.55.0.windows.2 (killing one Git Bash) [N/y]?
+99-078205+SQC1@99-078205 MINGW64 ~/Desktop/Local_Lista/aula2FullStack (main)
+$ N
+bash: N: command not found
+
+99-078205+SQC1@99-078205 MINGW64 ~/Desktop/Local_Lista/aula2FullStack (main)
+$ git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   gestaoFinanceira.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+99-078205+SQC1@99-078205 MINGW64 ~/Desktop/Local_Lista/aula2FullStack (main)
+$ git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   gestaoFinanceira.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+99-078205+SQC1@99-078205 MINGW64 ~/Desktop/Local_Lista/aula2FullStack (main)
+$ git add .
+
+99-078205+SQC1@99-078205 MINGW64 ~/Desktop/Local_Lista/aula2FullStack (main)
+$ git commit -m "Versão 2: Adicionei carne"
+[main d3ef555] Versão 2: Adicionei carne
+ 1 file changed, 3 insertions(+)
+
+99-078205+SQC1@99-078205 MINGW64 ~/Desktop/Local_Lista/aula2FullStack (main)
+$ git push -u origin main
+info: please complete authentication in your browser...
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+Delta compression using up to 20 threads
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 326 bytes | 326.00 KiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+To https://github.com/Guspyy/aula2FullStack.git
+   bd9d213..d3ef555  main -> main
+branch 'main' set up to track 'origin/main'.
+
+99-078205+SQC1@99-078205 MINGW64 ~/Desktop/Local_Lista/aula2FullStack (main)
+$ git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   gestaoFinanceira.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+99-078205+SQC1@99-078205 MINGW64 ~/Desktop/Local_Lista/aula2FullStack (main)
+$ git add .
+
+99-078205+SQC1@99-078205 MINGW64 ~/Desktop/Local_Lista/aula2FullStack (main)
+$ git commit -m "Versão 3: Melhorei a lista e adicionei 5 produtos"
+[main 562f66a] Versão 3: Melhorei a lista e adicionei 5 produtos
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+99-078205+SQC1@99-078205 MINGW64 ~/Desktop/Local_Lista/aula2FullStack (main)
+$ git push -u origin main
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+Delta compression using up to 20 threads
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 447 bytes | 447.00 KiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+To https://github.com/Guspyy/aula2FullStack.git
+   d3ef555..562f66a  main -> main
+branch 'main' set up to track 'origin/main'.
