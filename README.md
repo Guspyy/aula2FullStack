@@ -1,5 +1,4 @@
 Miro:
-
 https://miro.com/welcomeonboard/STJhenRjQktpcFBVVlpSdDFFaHkwbVFRdlFVSXh1aG5pNVhEZk5vVjRHSitiMUJSeW1VdEtac3lWaDBybnVLOVBUN0FXd3gvcDJzQkNOZHlvWWFRMXRSaE8vc3VZSGVTWDUvOTZqMituWGExVE9OSktKK1VUN0pVK1R2S0w4VkpBS2NFMDFkcUNFSnM0d3FEN050ekl3PT0hdjE=?share_link_id=742449278159
 
 Github NicolasEldorado:
