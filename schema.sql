@@ -1,0 +1,23 @@
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE IF NOT EXISTS usuarios(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS categorias(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS gastos(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    categoria_id INTEGER NOT NULL,
+    produto TEXT NOT NULL,
+    valor REAL NOT NULL,
+    data DATE NOT NULL,
+    hora TIME,
+    FOREIGN KEY (user_id) REFERENCES usuarios(id),
+    FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+);
