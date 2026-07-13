@@ -1,0 +1,63 @@
+from pathlib import Path
+import sqlite3
+import struct
+from tkinter import INSERT
+
+CREATE TABLE usuarios (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome STRING,
+    senha STRING
+);
+
+CREATE TABLE gastos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    usuario STRING,
+    produto STRING,
+    categoria_id INTEGER,
+    valor FLOAT,
+    data_gasto DATE,
+    horario TIME
+);
+
+struct aux:
+    usuario STRING,
+    produto STRING,
+    categoria_id INTEGER,
+    valor FLOAT,
+    data_gasto DATE,
+    horario TIME;
+
+usuarioatual STRING
+
+while(1):
+    print("1 - Cadastrar usuário")
+    print("2 - Entrar")
+    opcao = input()
+
+    if opcao == "1":
+        
+        usuarioatual = input("Digite o nome do usuário:")
+        if !SELECT 1 FROM usuarios WHERE nome = usuarioatual:
+            INSERT INTO usuarios (nome)
+            VALUES usuarioatual
+        else :
+            print ("Usuário já existe!")
+            usuarioatual=("")
+            continue
+        INSERT INTO usuarios (senha)
+        VALUES input("Digite a senha:")
+        continue
+    else if opcao == "2":
+        usuarioatual = input("Digite o nome do usuário:")
+        if !SELECT 1 FROM usuarios WHERE nome = usuarioatual AND senha = input("Digite a senha do usuário:"):
+            print("Usuário ou senha incorretos!")
+            usuarioatual=("")
+            continue
+        else:
+            print("Login realizado")
+            
+    else:
+        print("Opção inválida!")
+        continue 
+
+
