@@ -28,6 +28,37 @@
             text-align: center;
         }
 
+        .topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topo h1 {
+            flex: 1;
+        }
+
+        .botao-sair {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 5px;
+            background-color: #6b7280;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .botao-sair:hover {
+            opacity: 0.9;
+        }
+
+        .usuario-logado {
+            text-align: center;
+            color: #555555;
+            margin-top: -10px;
+            margin-bottom: 20px;
+        }
+
         form {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -124,7 +155,14 @@
 
     <div class="container">
 
-        <h1>Controle de Gastos Pessoais</h1>
+        <div class="topo">
+            <h1>Controle de Gastos Pessoais</h1>
+            <button type="button" class="botao-sair" id="botao-sair">
+                Sair
+            </button>
+        </div>
+
+        <p class="usuario-logado" id="usuario-logado"></p>
 
         <h2>Novo Gasto</h2>
 
@@ -234,6 +272,15 @@
     <script>
         const API_URL = "http://127.0.0.1:5000";
 
+        // ---- Controle de sessão ----
+        const idUsuarioLogado = localStorage.getItem("id_usuario");
+        const nomeUsuarioLogado = localStorage.getItem("nome_usuario");
+
+        // Se ninguém estiver logado, manda pro login
+        if (!idUsuarioLogado) {
+            window.location.href = "login.html";
+        }
+
         const formulario =
             document.getElementById("form-gasto");
 
@@ -260,6 +307,21 @@
 
         const mensagemLista =
             document.getElementById("mensagem-lista");
+
+        const usuarioLogadoTexto =
+            document.getElementById("usuario-logado");
+
+        const botaoSair =
+            document.getElementById("botao-sair");
+
+        usuarioLogadoTexto.textContent =
+            `Logado como: ${nomeUsuarioLogado || "Usuário"}`;
+
+        botaoSair.addEventListener("click", function () {
+            localStorage.removeItem("id_usuario");
+            localStorage.removeItem("nome_usuario");
+            window.location.href = "login.html";
+        });
 
 
         async function carregarCategorias() {
@@ -301,7 +363,7 @@
         async function carregarGastos() {
             try {
                 const resposta = await fetch(
-                    `${API_URL}/gastos`
+                    `${API_URL}/gastos?id_usuario=${idUsuarioLogado}`
                 );
 
                 if (!resposta.ok) {
@@ -442,7 +504,7 @@
                     data_gasto: dataGasto.value,
                     forma_pagamento:
                         formaPagamento.value,
-                    id_usuario: 1,
+                    id_usuario: Number(idUsuarioLogado),
                     id_categoria:
                         Number(categoria.value)
                 };

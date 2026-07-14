@@ -54,23 +54,23 @@ def listar_categorias():
 
 @app.route("/gastos", methods=["GET"])
 def listar_gastos():
+    id_usuario = request.args.get("id_usuario")
+
+    if not id_usuario:
+        return jsonify({"erro": "Informe o id_usuario."}), 400
+
     try:
         with conectar_banco() as conexao:
             gastos = conexao.execute("""
                 SELECT
-                    g.id_gasto,
-                    g.descricao,
-                    g.valor,
-                    g.data_gasto,
-                    g.forma_pagamento,
-                    g.id_usuario,
-                    g.id_categoria,
+                    g.id_gasto, g.descricao, g.valor, g.data_gasto,
+                    g.forma_pagamento, g.id_usuario, g.id_categoria,
                     c.nome_categoria
                 FROM gastos g
-                LEFT JOIN categorias c
-                    ON c.id_categoria = g.id_categoria
+                LEFT JOIN categorias c ON c.id_categoria = g.id_categoria
+                WHERE g.id_usuario = ?
                 ORDER BY g.id_gasto
-            """).fetchall()
+            """, (id_usuario,)).fetchall()
 
         resultado = [
             {
@@ -94,6 +94,71 @@ def listar_gastos():
             "detalhes": str(erro)
         }), 500
 
+@app.route("/usuarios", methods=["POST"])
+def cadastrar_usuario():
+    dados = request.get_json(silent=True)
+
+    if not dados:
+        return jsonify({"erro": "Envie os dados em JSON."}), 400
+
+    nome = str(dados.get("nome", "")).strip()
+    email = str(dados.get("email", "")).strip().lower()
+    senha = str(dados.get("senha", "")).strip()
+
+    if not nome or not email or not senha:
+        return jsonify({"erro": "Nome, e-mail e senha são obrigatórios."}), 400
+
+    try:
+        with conectar_banco() as conexao:
+            cursor = conexao.execute(
+                """
+                INSERT INTO usuarios (nome, email, senha)
+                VALUES (?, ?, ?)
+                """,
+                (nome, email, senha)
+            )
+            conexao.commit()
+            novo_id = cursor.lastrowid
+
+        return jsonify({
+            "mensagem": "Usuário cadastrado com sucesso.",
+            "id_usuario": novo_id
+        }), 201
+
+    except sqlite3.IntegrityError:
+        return jsonify({"erro": "Esse e-mail já está cadastrado."}), 400
+
+    except sqlite3.Error as erro:
+        return jsonify({"erro": "Não foi possível cadastrar.", "detalhes": str(erro)}), 500
+
+
+@app.route("/login", methods=["POST"])
+def login():
+    dados = request.get_json(silent=True)
+
+    if not dados:
+        return jsonify({"erro": "Envie os dados em JSON."}), 400
+
+    email = str(dados.get("email", "")).strip().lower()
+    senha = str(dados.get("senha", "")).strip()
+
+    if not email or not senha:
+        return jsonify({"erro": "E-mail e senha são obrigatórios."}), 400
+
+    with conectar_banco() as conexao:
+        usuario = conexao.execute(
+            "SELECT id_usuario, nome, senha FROM usuarios WHERE email = ?",
+            (email,)
+        ).fetchone()
+
+    if usuario is None or usuario["senha"] != senha:
+        return jsonify({"erro": "E-mail ou senha inválidos."}), 401
+
+    return jsonify({
+        "mensagem": "Login realizado com sucesso.",
+        "id_usuario": usuario["id_usuario"],
+        "nome": usuario["nome"]
+    }), 200
 
 @app.route("/gastos", methods=["POST"])
 def cadastrar_gasto():

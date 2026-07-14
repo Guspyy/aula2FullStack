@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Controle de Gastos</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 380px;
+            width: 100%;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 0;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .campo {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .campo label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .campo input {
+            padding: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .botao-cadastrar {
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            background-color: #1f6feb;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .botao-cadastrar:hover {
+            opacity: 0.9;
+        }
+
+        .mensagem {
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .link-login {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .link-login a {
+            color: #1f6feb;
+            text-decoration: none;
+        }
+
+        .link-login a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Criar conta</h1>
+
+        <form id="form-cadastro">
+
+            <div class="campo">
+                <label for="nome">Nome</label>
+                <input type="text" id="nome" required>
+            </div>
+
+            <div class="campo">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" required>
+            </div>
+
+            <div class="campo">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" required>
+            </div>
+
+            <button type="submit" class="botao-cadastrar">
+                Cadastrar
+            </button>
+
+        </form>
+
+        <p id="mensagem" class="mensagem"></p>
+
+        <p class="link-login">
+            Já tem conta? <a href="login.html">Entrar</a>
+        </p>
+
+    </div>
+
+    <script>
+        const API_URL = "http://127.0.0.1:5000";
+
+        const formulario = document.getElementById("form-cadastro");
+        const nome = document.getElementById("nome");
+        const email = document.getElementById("email");
+        const senha = document.getElementById("senha");
+        const mensagem = document.getElementById("mensagem");
+
+        formulario.addEventListener("submit", async function (evento) {
+            evento.preventDefault();
+
+            mensagem.style.color = "#000000";
+            mensagem.textContent = "Cadastrando...";
+
+            try {
+                const resposta = await fetch(`${API_URL}/usuarios`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        nome: nome.value,
+                        email: email.value,
+                        senha: senha.value
+                    })
+                });
+
+                const resultado = await resposta.json();
+
+                if (!resposta.ok) {
+                    throw new Error(resultado.erro || "Não foi possível cadastrar.");
+                }
+
+                mensagem.style.color = "#1a7f37";
+                mensagem.textContent = "Conta criada! Redirecionando para o login...";
+
+                setTimeout(function () {
+                    window.location.href = "login.html";
+                }, 1500);
+
+            } catch (erro) {
+                mensagem.style.color = "#d93025";
+                mensagem.textContent = erro.message;
+                console.error(erro);
+            }
+        });
+    </script>
+
+</body>
+</html>
