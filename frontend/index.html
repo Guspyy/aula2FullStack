@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Controle de Gastos Pessoais</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1,
+        h2 {
+            text-align: center;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .campo {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .campo label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .campo input,
+        .campo select {
+            padding: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .botao-salvar {
+            grid-column: 1 / -1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            background-color: #1f6feb;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .botao-salvar:hover {
+            opacity: 0.9;
+        }
+
+        .botao-excluir {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            background-color: #d93025;
+            color: white;
+            cursor: pointer;
+        }
+
+        .botao-excluir:hover {
+            opacity: 0.9;
+        }
+
+        .tabela-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #cccccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #eeeeee;
+        }
+
+        .mensagem {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding: 15px;
+            }
+
+            form {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Controle de Gastos Pessoais</h1>
+
+        <h2>Novo Gasto</h2>
+
+        <form id="form-gasto">
+
+            <div class="campo">
+                <label for="descricao">Descrição</label>
+                <input
+                    type="text"
+                    id="descricao"
+                    required
+                >
+            </div>
+
+            <div class="campo">
+                <label for="valor">Valor</label>
+                <input
+                    type="number"
+                    id="valor"
+                    step="0.01"
+                    min="0.01"
+                    required
+                >
+            </div>
+
+            <div class="campo">
+                <label for="data-gasto">Data</label>
+                <input
+                    type="date"
+                    id="data-gasto"
+                    required
+                >
+            </div>
+
+            <div class="campo">
+                <label for="forma-pagamento">
+                    Forma de pagamento
+                </label>
+
+                <select id="forma-pagamento" required>
+                    <option value="">Selecione</option>
+                    <option value="Dinheiro">Dinheiro</option>
+                    <option value="Pix">Pix</option>
+                    <option value="Cartão de débito">
+                        Cartão de débito
+                    </option>
+                    <option value="Cartão de crédito">
+                        Cartão de crédito
+                    </option>
+                </select>
+            </div>
+
+            <div class="campo">
+                <label for="categoria">Categoria</label>
+
+                <select id="categoria" required>
+                    <option value="">
+                        Carregando categorias...
+                    </option>
+                </select>
+            </div>
+
+            <button
+                type="submit"
+                class="botao-salvar"
+            >
+                Salvar gasto
+            </button>
+
+        </form>
+
+        <p
+            id="mensagem-formulario"
+            class="mensagem"
+        ></p>
+
+        <h2>Gastos cadastrados</h2>
+
+        <div class="tabela-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Descrição</th>
+                        <th>Valor</th>
+                        <th>Data</th>
+                        <th>Categoria</th>
+                        <th>Pagamento</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody id="lista-gastos">
+                </tbody>
+            </table>
+        </div>
+
+        <p
+            id="mensagem-lista"
+            class="mensagem"
+        >
+            Carregando gastos...
+        </p>
+
+    </div>
+
+    <script>
+        const API_URL = "http://127.0.0.1:5000";
+
+        const formulario =
+            document.getElementById("form-gasto");
+
+        const descricao =
+            document.getElementById("descricao");
+
+        const valor =
+            document.getElementById("valor");
+
+        const dataGasto =
+            document.getElementById("data-gasto");
+
+        const formaPagamento =
+            document.getElementById("forma-pagamento");
+
+        const categoria =
+            document.getElementById("categoria");
+
+        const listaGastos =
+            document.getElementById("lista-gastos");
+
+        const mensagemFormulario =
+            document.getElementById("mensagem-formulario");
+
+        const mensagemLista =
+            document.getElementById("mensagem-lista");
+
+
+        async function carregarCategorias() {
+            try {
+                const resposta = await fetch(
+                    `${API_URL}/categorias`
+                );
+
+                if (!resposta.ok) {
+                    throw new Error(
+                        "Não foi possível carregar as categorias."
+                    );
+                }
+
+                const categorias = await resposta.json();
+
+                categoria.innerHTML =
+                    '<option value="">Selecione</option>';
+
+                categorias.forEach(function (item) {
+                    const opcao =
+                        document.createElement("option");
+
+                    opcao.value = item.id_categoria;
+                    opcao.textContent = item.nome_categoria;
+
+                    categoria.appendChild(opcao);
+                });
+
+            } catch (erro) {
+                categoria.innerHTML =
+                    '<option value="">Erro ao carregar</option>';
+
+                console.error(erro);
+            }
+        }
+
+
+        async function carregarGastos() {
+            try {
+                const resposta = await fetch(
+                    `${API_URL}/gastos`
+                );
+
+                if (!resposta.ok) {
+                    throw new Error(
+                        "Não foi possível carregar os gastos."
+                    );
+                }
+
+                const gastos = await resposta.json();
+
+                listaGastos.innerHTML = "";
+
+                if (gastos.length === 0) {
+                    mensagemLista.textContent =
+                        "Nenhum gasto cadastrado.";
+
+                    return;
+                }
+
+                gastos.forEach(function (gasto) {
+                    const linha =
+                        document.createElement("tr");
+
+                    const dataFormatada =
+                        new Date(
+                            `${gasto.data_gasto}T00:00:00`
+                        ).toLocaleDateString("pt-BR");
+
+                    const valorFormatado =
+                        Number(gasto.valor).toLocaleString(
+                            "pt-BR",
+                            {
+                                style: "currency",
+                                currency: "BRL"
+                            }
+                        );
+
+                    linha.innerHTML = `
+                        <td>${gasto.id_gasto}</td>
+                        <td>${gasto.descricao}</td>
+                        <td>${valorFormatado}</td>
+                        <td>${dataFormatada}</td>
+                        <td>${gasto.nome_categoria || ""}</td>
+                        <td>${gasto.forma_pagamento || ""}</td>
+                        <td>
+                            <button
+                                type="button"
+                                class="botao-excluir"
+                                data-id="${gasto.id_gasto}"
+                            >
+                                Excluir
+                            </button>
+                        </td>
+                    `;
+
+                    listaGastos.appendChild(linha);
+                });
+
+                mensagemLista.textContent = "";
+
+            } catch (erro) {
+                mensagemLista.textContent =
+                    "Erro ao conectar com o servidor Flask.";
+
+                console.error(erro);
+            }
+        }
+
+
+        async function excluirGasto(idGasto) {
+            const confirmou = window.confirm(
+                "Deseja realmente excluir este gasto?"
+            );
+
+            if (!confirmou) {
+                return;
+            }
+
+            try {
+                const resposta = await fetch(
+                    `${API_URL}/gastos/${idGasto}`,
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+                const resultado = await resposta.json();
+
+                if (!resposta.ok) {
+                    throw new Error(
+                        resultado.erro ||
+                        "Não foi possível excluir o gasto."
+                    );
+                }
+
+                mensagemFormulario.textContent =
+                    resultado.mensagem;
+
+                await carregarGastos();
+
+            } catch (erro) {
+                mensagemFormulario.textContent =
+                    erro.message;
+
+                console.error(erro);
+            }
+        }
+
+
+        listaGastos.addEventListener(
+            "click",
+            function (evento) {
+                if (
+                    evento.target.classList.contains(
+                        "botao-excluir"
+                    )
+                ) {
+                    const idGasto =
+                        evento.target.dataset.id;
+
+                    excluirGasto(idGasto);
+                }
+            }
+        );
+
+
+        formulario.addEventListener(
+            "submit",
+            async function (evento) {
+                evento.preventDefault();
+
+                mensagemFormulario.textContent =
+                    "Salvando gasto...";
+
+                const novoGasto = {
+                    descricao: descricao.value,
+                    valor: Number(valor.value),
+                    data_gasto: dataGasto.value,
+                    forma_pagamento:
+                        formaPagamento.value,
+                    id_usuario: 1,
+                    id_categoria:
+                        Number(categoria.value)
+                };
+
+                try {
+                    const resposta = await fetch(
+                        `${API_URL}/gastos`,
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+                            body: JSON.stringify(novoGasto)
+                        }
+                    );
+
+                    const resultado =
+                        await resposta.json();
+
+                    if (!resposta.ok) {
+                        throw new Error(
+                            resultado.erro ||
+                            "Não foi possível cadastrar."
+                        );
+                    }
+
+                    mensagemFormulario.textContent =
+                        resultado.mensagem;
+
+                    formulario.reset();
+
+                    await carregarGastos();
+
+                } catch (erro) {
+                    mensagemFormulario.textContent =
+                        erro.message;
+
+                    console.error(erro);
+                }
+            }
+        );
+
+
+        carregarCategorias();
+        carregarGastos();
+    </script>
+
+</body>
+</html>
