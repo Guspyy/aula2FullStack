@@ -47,7 +47,7 @@ while(1):
         INSERT INTO usuarios (senha)
         VALUES input("Digite a senha:")
         continue
-    else if opcao == "2":
+    elif opcao == "2":
         usuarioatual = input("Digite o nome do usuário:")
         if !SELECT 1 FROM usuarios WHERE nome = usuarioatual AND senha = input("Digite a senha do usuário:"):
             print("Usuário ou senha incorretos!")
